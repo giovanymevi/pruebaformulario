@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formulario · Recepción de trabajos</title>
+  <!-- html2pdf (para guardar en PDF) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #f2f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      padding: 20px;
+    }
+    .card {
+      max-width: 780px;
+      width: 100%;
+      background: white;
+      border-radius: 24px;
+      padding: 28px 30px 34px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+      transition: 0.2s;
+    }
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #1e2b3c;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+    .subhead {
+      color: #5a6d7e;
+      font-size: 0.95rem;
+      border-left: 4px solid #2a7de1;
+      padding-left: 14px;
+      margin-bottom: 24px;
+    }
+    /* ----- LOGO (sencillo) ----- */
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+      padding-bottom: 16px;
+      border-bottom: 2px dashed #dce3ec;
+    }
+    .logo-svg {
+      flex-shrink: 0;
+    }
+    .logo-text {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #0b1e2e;
+      letter-spacing: -0.5px;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+    .logo-text small {
+      font-weight: 400;
+      font-size: 0.8rem;
+      color: #3f5a74;
+      letter-spacing: 0.2px;
+    }
+    /* ----- formulario ----- */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 20px;
+    }
+    .full-width {
+      grid-column: 1 / -1;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .field label {
+      font-weight: 500;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: #3f5a74;
+    }
+    .field input,
+    .field textarea,
+    .field select {
+      background: #f7f9fc;
+      border: 1px solid #d7dfe9;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      transition: 0.2s;
+      font-family: inherit;
+      width: 100%;
+    }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      outline: 2px solid #2a7de1;
+      outline-offset: 1px;
+      border-color: transparent;
+      background: #ffffff;
+    }
+    .field textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+    .folio-box {
+      background: #eef4fa;
+      border-radius: 40px;
+      padding: 6px 20px 6px 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      color: #1a3450;
+      border: 1px solid #cbdae8;
+      font-size: 1rem;
+      width: fit-content;
+    }
+    .folio-box span {
+      background: white;
+      padding: 2px 18px;
+      border-radius: 40px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #00337c;
+      letter-spacing: 1px;
+    }
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+      justify-content: flex-end;
+      border-top: 1px solid #e4eaf2;
+      padding-top: 24px;
+    }
+    .btn {
+      background: white;
+      border: 1px solid #bcc9db;
+      padding: 10px 22px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #1f3a57;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: 0.2s;
+      background: #fbfdff;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .btn-primary {
+      background: #0b2b4a;
+      border: 1px solid #0b2b4a;
+      color: white;
+      box-shadow: 0 4px 8px rgba(10, 40, 70, 0.15);
+    }
+    .btn-primary:hover {
+      background: #1a3f62;
+      border-color: #1a3f62;
+      transform: scale(0.97);
+    }
+    .btn-success {
+      background: #1d7a4f;
+      border: 1px solid #1d7a4f;
+      color: white;
+    }
+    .btn-success:hover {
+      background: #14693f;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #a5b9cf;
+    }
+    .btn-outline:hover {
+      background: #e3ebf5;
+    }
+    .btn:active { transform: scale(0.95); }
+    /* ----- vista previa del ticket (para impresión / PDF) ----- */
+    .ticket-preview {
+      display: none; /* oculto por defecto, solo se muestra al imprimir/PDF */
+    }
+    /* estilos para la impresión térmica (80mm) */
+    @media print {
+      body { background: white; padding: 0; margin: 0; }
+      .card { box-shadow: none; border-radius: 0; padding: 0; }
+      .no-print { display: none !important; }
+      .ticket-preview { 
+        display: block !important; 
+        width: 100%;
+        max-width: 80mm;
+        margin: 0 auto;
+        padding: 10px 12px;
+        font-family: 'Courier New', monospace;
+        font-size: 13px;
+        color: #111;
+        background: white;
+      }
+      .ticket-preview .logo-print {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 2px dashed #333;
+        padding-bottom: 10px;
+        margin-bottom: 12px;
+      }
+      .ticket-preview .logo-print svg { width: 48px; height: 48px; }
+      .ticket-preview .item-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 0;
+        border-bottom: 1px dotted #aaa;
+      }
+      .ticket-preview .folio-print {
+        background: #eee;
+        padding: 6px 14px;
+        border-radius: 30px;
+        font-weight: bold;
+        text-align: center;
+        margin: 12px 0;
+      }
+      .ticket-preview .footer-print {
+        margin-top: 16px;
+        border-top: 2px dashed #333;
+        padding-top: 12px;
+        font-size: 11px;
+        text-align: center;
+        color: #333;
+      }
+    }
+    /* responsive */
+    @media (max-width: 560px) {
+      .card { padding: 20px 16px; }
+      .form-grid { grid-template-columns: 1fr; gap: 12px; }
+      .full-width { grid-column: 1; }
+      .btn-group { flex-direction: column; align-items: stretch; }
+      .btn { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card" id="formCard">
+
+  <!-- LOGO + encabezado -->
+  <div class="logo-area">
+    <div class="logo-svg">
+      <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="4" width="44" height="44" rx="12" fill="#0b2b4a" />
+        <path d="M16 16L26 26L36 16M16 36L26 26L36 36" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="26" cy="26" r="8" fill="#e5b83b" stroke="white" stroke-width="2" />
+      </svg>
+    </div>
+    <div class="logo-text">
+      SERVICIO TÉCNICO
+      <small>recepción · taller</small>
+    </div>
+  </div>
+
+  <!-- Folio dinámico (se incrementa con cada "nuevo trabajo") -->
+  <div class="field full-width" style="margin-bottom: 6px;">
+    <label>📋 FOLIO</label>
+    <div class="folio-box">
+      <span>#</span><span id="folioDisplay">0001</span>
+    </div>
+  </div>
+
+  <!-- Formulario -->
+  <form id="workForm" class="form-grid">
+    <div class="field full-width">
+      <label>Cliente / Empresa</label>
+      <input type="text" id="clientName" placeholder="Nombre o razón social" value="Taller Mecánico El Sol" />
+    </div>
+    <div class="field">
+      <label>Teléfono</label>
+      <input type="text" id="phone" placeholder="555-1234" value="55 1234 5678" />
+    </div>
+    <div class="field">
+      <label>Fecha</label>
+      <input type="date" id="workDate" />
+    </div>
+    <div class="field full-width">
+      <label>Descripción del trabajo</label>
+      <textarea id="workDesc" rows="2">Revisión general y cambio de aceite</textarea>
+    </div>
+    <div class="field">
+      <label>Equipo / vehículo</label>
+      <input type="text" id="equipment" placeholder="Modelo, marca..." value="Toyota Corolla 2020" />
+    </div>
+    <div class="field">
+      <label>Estado</label>
+      <select id="workStatus">
+        <option value="Pendiente">Pendiente</option>
+        <option value="En proceso" selected>En proceso</option>
+        <option value="Terminado">Terminado</option>
+        <option value="Entregado">Entregado</option>
+      </select>
+    </div>
+    <div class="field full-width">
+      <label>Observaciones</label>
+      <input type="text" id="observations" placeholder="Notas adicionales" value="requiere piezas especiales" />
+    </div>
+  </form>
+
+  <!-- Botones de acción -->
+  <div class="btn-group no-print">
+    <button class="btn btn-outline" id="newTicketBtn">🔄 Nuevo folio</button>
+    <button class="btn btn-primary" id="printBtn">🖨️ Imprimir</button>
+    <button class="btn btn-success" id="pdfBtn">📄 Guardar PDF</button>
+  </div>
+
+  <!-- ====== TICKET / VISTA PREVIA PARA IMPRESIÓN ====== -->
+  <div class="ticket-preview" id="ticketPreview">
+    <div class="logo-print">
+      <svg width="44" height="44" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="4" width="44" height="44" rx="12" fill="#0b2b4a" />
+        <path d="M16 16L26 26L36 16M16 36L26 26L36 36" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="26" cy="26" r="8" fill="#e5b83b" stroke="white" stroke-width="2" />
+      </svg>
+      <div><strong>SERVICIO TÉCNICO</strong><br /><span style="font-size:11px;">recepción de trabajos</span></div>
+    </div>
+
+    <div style="margin: 6px 0 4px; display:flex; justify-content:space-between;">
+      <span><strong>Folio:</strong> <span id="folioPrint"></span></span>
+      <span><strong>Fecha:</strong> <span id="datePrint"></span></span>
+    </div>
+    <div style="margin: 2px 0;"><strong>Cliente:</strong> <span id="clientPrint"></span></div>
+    <div style="margin: 2px 0;"><strong>Teléfono:</strong> <span id="phonePrint"></span></div>
+    <div style="margin: 2px 0;"><strong>Equipo:</strong> <span id="equipmentPrint"></span></div>
+    <div style="margin: 6px 0; border-top:1px dashed #333; padding-top:6px;">
+      <strong>Descripción:</strong><br /><span id="descPrint"></span>
+    </div>
+    <div style="margin: 2px 0;"><strong>Estado:</strong> <span id="statusPrint"></span></div>
+    <div style="margin: 2px 0;"><strong>Observaciones:</strong> <span id="obsPrint"></span></div>
+    <div class="footer-print">
+      <span>📌 Recibido · Gracias por su confianza</span><br />
+      <span style="font-size:10px;">Fecha de impresión: <span id="printDateFooter"></span></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- STATE ----------
+    let currentFolio = 1;  // arranca en 1, se muestra con ceros
+
+    // Referencias DOM
+    const folioDisplay = document.getElementById('folioDisplay');
+    const clientName = document.getElementById('clientName');
+    const phone = document.getElementById('phone');
+    const workDate = document.getElementById('workDate');
+    const workDesc = document.getElementById('workDesc');
+    const equipment = document.getElementById('equipment');
+    const workStatus = document.getElementById('workStatus');
+    const observations = document.getElementById('observations');
+
+    // elementos del ticket (print/PDF)
+    const folioPrint = document.getElementById('folioPrint');
+    const datePrint = document.getElementById('datePrint');
+    const clientPrint = document.getElementById('clientPrint');
+    const phonePrint = document.getElementById('phonePrint');
+    const equipmentPrint = document.getElementById('equipmentPrint');
+    const descPrint = document.getElementById('descPrint');
+    const statusPrint = document.getElementById('statusPrint');
+    const obsPrint = document.getElementById('obsPrint');
+    const printDateFooter = document.getElementById('printDateFooter');
+
+    // Inicializar fecha por defecto (hoy)
+    function setDefaultDate() {
+      if (!workDate.value) {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        workDate.value = `${yyyy}-${mm}-${dd}`;
+      }
+    }
+    setDefaultDate();
+
+    // Actualizar display del folio (con ceros a la izquierda, 4 dígitos)
+    function updateFolioDisplay() {
+      const padded = String(currentFolio).padStart(4, '0');
+      folioDisplay.textContent = padded;
+    }
+
+    // ---------- ACTUALIZAR TICKET (vista previa) ----------
+    function updateTicketPreview() {
+      const padded = String(currentFolio).padStart(4, '0');
+      folioPrint.textContent = padded;
+
+      // fecha formateada (dd/mm/yyyy)
+      let dateVal = workDate.value;
+      if (dateVal) {
+        const parts = dateVal.split('-');
+        datePrint.textContent = `${parts[2]}/${parts[1]}/${parts[0]}`;
+      } else {
+        datePrint.textContent = '—';
+      }
+
+      clientPrint.textContent = clientName.value.trim() || '—';
+      phonePrint.textContent = phone.value.trim() || '—';
+      equipmentPrint.textContent = equipment.value.trim() || '—';
+      descPrint.textContent = workDesc.value.trim() || '—';
+      statusPrint.textContent = workStatus.value;
+      obsPrint.textContent = observations.value.trim() || '—';
+
+      // fecha actual para el pie de impresión
+      const now = new Date();
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+      printDateFooter.textContent = now.toLocaleString('es-MX', options);
+    }
+
+    // ---------- NUEVO FOLIO (incrementa) ----------
+    function newFolio() {
+      currentFolio += 1;
+      updateFolioDisplay();
+      updateTicketPreview();
+      // opcional: limpiar campos? no se pide, solo folio.
+      // mantenemos los datos para que el usuario pueda editarlos.
+    }
+
+    // ---------- IMPRIMIR (ticket térmico) ----------
+    function printTicket() {
+      // primero actualizamos el preview con los datos actuales
+      updateTicketPreview();
+      // Forzamos que el ticket se muestre en impresión
+      // Usamos window.print() y la regla @media print muestra .ticket-preview
+      window.print();
+    }
+
+    // ---------- GUARDAR PDF (con html2pdf) ----------
+    function savePDF() {
+      updateTicketPreview();
+
+      const ticketElement = document.getElementById('ticketPreview');
+      // Aseguramos que el ticket tenga visibilidad y estilos para el PDF
+      // (como está en display:none, lo mostramos temporalmente con un contenedor)
+      const originalDisplay = ticketElement.style.display;
+      ticketElement.style.display = 'block';
+      ticketElement.style.background = 'white';
+      ticketElement.style.padding = '14px 16px';
+      ticketElement.style.maxWidth = '80mm';
+      ticketElement.style.margin = '0 auto';
+      ticketElement.style.fontFamily = "'Courier New', monospace";
+      ticketElement.style.color = '#111';
+      ticketElement.style.boxShadow = '0 0 0 1px #ddd';
+
+      // opciones de html2pdf (formato A6 similar a ticket 80mm)
+      const opt = {
+        margin:        [0.3, 0.3, 0.3, 0.3], // top, right, bottom, left (unidades en mm)
+        filename:     `ticket-folio-${String(currentFolio).padStart(4,'0')}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, letterRendering: true },
+        jsPDF:        { unit: 'mm', format: [80, 150], orientation: 'portrait' } // 80mm de ancho
+      };
+
+      html2pdf().set(opt).from(ticketElement).save().then(() => {
+        // restauramos display
+        ticketElement.style.display = originalDisplay;
+        ticketElement.style.background = '';
+        ticketElement.style.padding = '';
+        ticketElement.style.maxWidth = '';
+        ticketElement.style.margin = '';
+        ticketElement.style.fontFamily = '';
+        ticketElement.style.color = '';
+        ticketElement.style.boxShadow = '';
+      }).catch((err) => {
+        console.warn('Error en PDF:', err);
+        ticketElement.style.display = originalDisplay;
+        alert('Ocurrió un error al generar el PDF, pero puedes intentar imprimir.');
+      });
+    }
+
+    // ---------- EVENT LISTENERS ----------
+    document.getElementById('newTicketBtn').addEventListener('click', newFolio);
+
+    document.getElementById('printBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      // actualizamos el preview con los datos actuales antes de imprimir
+      updateTicketPreview();
+      // también actualizamos la fecha del pie
+      printTicket();
+    });
+
+    document.getElementById('pdfBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      savePDF();
+    });
+
+    // Actualizar el preview cada vez que se cambie algún campo (opcional)
+    const inputs = [clientName, phone, workDate, workDesc, equipment, workStatus, observations];
+    inputs.forEach(input => {
+      input.addEventListener('input', updateTicketPreview);
+      input.addEventListener('change', updateTicketPreview);
+    });
+
+    // Inicializar folio y preview
+    updateFolioDisplay();
+    updateTicketPreview();
+
+    // Exponer funciones para depuración (opcional)
+    window.newFolio = newFolio;
+  })();
+</script>
+
+</body>
+</html>
